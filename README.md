@@ -26,31 +26,31 @@ With the folloeing function, we are going to draw a line between two points.
 
     void draw_line(point* p0, point* p1) 
     {
-      unsigned int* framebuffer = (unsigned int*)fb;
-	    float x0                  = (float)(p0->x);
-	    float y0                  = (float)(p0->y);
-	    float x                   = (float)(p1->x);
-	    float y                   = (float)(p1->y);
-	    float dx                  = x - x0;
-	    float dy                  = y - y0;
-	    float m                   = dy / dx;
-	    float mprime              = 1.0 / m;
-	    float next_y              = y0;
-	    float next_x              = x0;
-	    unsigned int this_pixel   = 0;
-      unsigned int pixel_number = 0;
+	unsigned int* framebuffer = (unsigned int*)fb;
+	float x0                  = (float)(p0->x);
+	float y0                  = (float)(p0->y);
+	float x                   = (float)(p1->x);
+	float y                   = (float)(p1->y);
+	float dx                  = x - x0;
+	float dy                  = y - y0;
+	float m                   = dy / dx;
+	float mprime              = 1.0 / m;
+	float next_y              = y0;
+	float next_x              = x0;
+	unsigned int this_pixel   = 0;
+	unsigned int pixel_number = 0;
       
-      /* rasterize as scanline method */
-	    while (next_y < y)
-      {
-		    next_x       = x0 + ((next_y - y0) * mprime);
-				this_pixel   = ((unsigned int)next_x + ((unsigned int)next_y * WIDTH));
-		    pixel_number = ((unsigned int)next_x - (unsigned int)x0);
-		    while (pixel_number--)
-		    {
-			    framebuffer[this_pixel] = tr->color;
-			    this_pixel++;
-		    }
-		    next_y++;
+	/* rasterize as scanline method */
+	while (next_y < y)
+	{
+		next_x       = x0 + ((next_y - y0) * mprime);
+		this_pixel   = ((unsigned int)next_x + ((unsigned int)next_y * WIDTH));
+		pixel_number = ((unsigned int)next_x - (unsigned int)x0);
+		while (pixel_number--)
+		{
+		    framebuffer[this_pixel] = tr->color;
+		    this_pixel++;
+		}
+		next_y++;
 	    }
     }
