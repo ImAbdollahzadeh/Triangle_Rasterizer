@@ -263,3 +263,18 @@ This is, in my opinion, the fastest way to paint a triangle based on the scanlin
 In function ***accelerated_line_based_xmmword_fillup_triangle***, all the calculations are similar to those of ***line_based_dword_fillup_triangle***, but instead of DWORD blit, I separated blocks of XMMWORDs and used 16-byte blit and finally some DWORD blit at the very end. 
 
 The benchmarking made it clear that ***accelerated_line_based_xmmword_fillup_triangle*** is simply 5.5 times faster than ***line_based_dword_fillup_triangle***. A single core CPU spent nearly ***0.43 ms*** to paint the represented triangle above with ***line_based_dword_fillup_triangle*** and the same with ***0.08 ms*** in ***accelerated_line_based_xmmword_fillup_triangle***.
+
+## Some notes on hardware accelerated triangle blit
+
+- Imagine a GPU designed for triangle raterization. This GPU has over 1000 paralle cores. In our *accelerated_line_based_xmmword_fillup_triangle*, there is 
+
+	while (next_y < y)
+	{
+		...
+		next_y++;
+	}
+	
+Our GPU can break this statement into **dy** cores (if dy < number_of_GPU_cores) and do all calculations in parallel, or into **number_of_GPU_cores** cores (if number_of_GPU_cores < dy) and in some small steps do the whole painting. With this in mind, we see that for if dy < number_of_GPU_cores, we can get dy factor in acceleration and if number_of_GPU_cores < dy, we would get (number_of_GPU_cores * (dy / number_of_GPU_cores)) + (dy % number_of_GPU_cores) factor in acceleration. 
+
+- If our imagined GPU draw circles and ellipses also based on triangle building blocks, one can see that for a large circle with radius of 400 (something like the hypotenuse of triangle above), therefore, if we start from 0° to 360° with steps 0.1°, we will be ended up to 3600 0.08 ms = 288 ms. Of course this is not the way to draw a circle, but just to give you a flavour of what would be the result of designing a game with everything based on triangles.
+		
