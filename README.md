@@ -95,7 +95,42 @@ There are three points to construct a tiangle. Then we draw three lines to highl
 	
 // img borders
 
-Now it is time to paint our triangle. For this, first of all, I need a macro to find the top point between points p0, p1, and p2. This macro also spits out left and rightside points (a.k.a side_point_1 and side_point_2). Then I start from top point and steps through the line between this point and side_point_1. I go one pixel down, then calculate the coressponding pixel between top point and side_point_2. I have now two limit points on a scanline and all pixels in between have to be painted. I have a function called ***line_based_dword_fillup_triangle*** for this reason. It is insanely fast and efficient.
+Now it is time to paint our triangle. For this, first of all, I need a macro to find the top point between points p0, p1, and p2. This macro also spits out left and rightside points (a.k.a side_point_1 and side_point_2). 
+
+	#define FIND_TOP_POINT(TR, TPT, SPT1, SPT2) do {	\
+		if(TR->p0->y < TR->p1->y)			\
+		{						\
+			if (TR->p0->y < TR->p2->y)		\
+			{					\
+				TPT  = TR->p0;			\
+				SPT1 = TR->p1;			\
+				SPT2 = TR->p2;			\
+			}					\
+			else					\
+			{					\
+				TPT  = TR->p2;			\
+				SPT1 = TR->p1;			\
+				SPT2 = TR->p0;			\
+			}					\
+		}						\
+		else						\
+		{						\
+			if (TR->p1->y < TR->p2->y)		\
+			{					\
+				TPT  = TR->p1;			\
+				SPT1 = TR->p0;			\
+				SPT2 = TR->p2;			\
+			}					\
+			else					\
+			{					\
+				TPT  = TR->p2;			\
+				SPT1 = TR->p1;			\
+				SPT2 = TR->p0;			\
+			}					\
+		}						\
+	} while(0)
+
+Then I start from top point and steps through the line between this point and side_point_1. I go one pixel down, then calculate the coressponding pixel between top point and side_point_2. I have now two limit points on a scanline and all pixels in between have to be painted. I have a function called ***line_based_dword_fillup_triangle*** for this reason. It is insanely fast and efficient.
 
 	void line_based_dword_fillup_triangle(triangle* tr)
 	{
