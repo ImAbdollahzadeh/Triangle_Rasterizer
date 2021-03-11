@@ -94,7 +94,7 @@ There are three points to construct a tiangle. Then we draw three lines to highl
 	draw_line(tr->p2, tr->p0);
 	
 <p align="center">
-	<img src="https://github.com/ImAbdollahzadeh/Triangle_Rasterizer/images/borders.PNG"/>
+	<img src="https://github.com/ImAbdollahzadeh/Triangle_Rasterizer/blob/main/images/borders.PNG"/>
 </p>
 
 Now it is time to paint our triangle. For this, first of all, I need a macro to find the top point between points p0, p1, and p2. This macro also spits out left and rightside points (a.k.a side_point_1 and side_point_2). 
@@ -181,7 +181,9 @@ There is room for some minor optimization that I leave for readers to play with,
 
 While we go one step in y direction down, we calculate the slope of the line between top_point and side_point_1 and thus the x component of the left side limit pixel. Based on this x component, we therefore calcualte the x component of the limit pixel falling on the line between top_point and side_point_2. Then fillup this scanline.
 
-// img 2
+<p align="center">
+	<img src="https://github.com/ImAbdollahzadeh/Triangle_Rasterizer/blob/main/images/filled_in_c.PNG"/>
+</p>
 
 The heart of the rasterizer is where we can work on to accelerate the blitting. For this reason I use x86-SSE optimization. If we concentrate on the way both limit points defined, we come up with this fact that, it cannot use packed floating point instructions since a line pixel can be anywhere on screen and any attampt to make it 16-byte aligned, would be a speed killer, and better to stick with the un-aligned instructions. Also I used inline assembly and not a separate .asm file (to tolerate the overhead of function epilogue and prologue).
 
