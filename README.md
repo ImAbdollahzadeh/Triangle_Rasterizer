@@ -20,37 +20,48 @@ Therefore, having two points, we can determine ***m*** and with this slope, we w
 ## Line drawing in C
 Points can be given as ***"unsigned int"*** or ***"float"*** values. It totally depends on how we would like to interpret our coordinate system on our display.
 
-Generally, for better precision, one uses floating point values and at the very last moment of drawing on screen, cast floating point values to unsigned int values. We will follow this strategy to draw our lines.
+Generally, for better precision, one uses floating point values and at the very last moment of drawing on screen, cast floating point values to integer values. We will follow this strategy to draw our lines.
 
-With the folloeing function, we are going to draw a line between two points.
+With the following function, we are going to draw a line between two points.
 
     void draw_line(point* p0, point* p1) 
     {
+		int           dx, dy, step_dx, step_dy, pixel_x, pixel_y, abs_dx, abs_dy, index = 0;
+		float         m;
+		float         x0          = (float)(p0->x);
+		float         y0          = (float)(p0->y);
+		float         x           = (float)(p1->x);
+		float         y           = (float)(p1->y);
+		unsigned int  color       = 0x00FFFF00; // ARGB
 		unsigned int* framebuffer = (unsigned int*)fb;
-		float x0                  = (float)(p0->x);
-		float y0                  = (float)(p0->y);
-		float x                   = (float)(p1->x);
-		float y                   = (float)(p1->y);
-		float dx                  = x - x0;
-		float dy                  = y - y0;
-		float m                   = dy / dx;
-		float mprime              = 1.0 / m;
-		float next_y              = y0;
-		float next_x              = x0;
-		unsigned int this_pixel   = 0;
-		unsigned int pixel_number = 0;
-     		
-		/* rasterize as scanline method */
-		while (next_y < y)
+
+		dx      = x - x0;
+		dy      = y - y0;
+		abs_dx  = ABS(dx); // absolute value of dx
+		abs_dy  = ABS(dy); // absolute value of dy
+		step_dx = sgn(dx); // +1 or -1
+		step_dy = sgn(dy); // +1 or -1
+
+		if (abs_dx >= abs_dy)
 		{
-			next_x       = x0 + ((next_y - y0) * mprime);
-			this_pixel   = ((unsigned int)next_x + ((unsigned int)next_y * WIDTH));
-			pixel_number = ((unsigned int)next_x - (unsigned int)x0);
-			while (pixel_number--)
+			m = (float)dy / (float)dx;
+			while(index != dx)
 			{
-			    framebuffer[this_pixel] = tr->color;
-			    this_pixel++;
+				pixel_x = index + x0;
+				pixel_y = m * index + y0;
+				framebuffer[pixel_x + WIDTH * pixel_y] = color;
+				index += step_dx;
 			}
-			next_y++;
 		}
-    }
+		else
+		{
+			m = (float)dx / (float)dy;
+			while (index != dy)
+			{
+				pixel_y = index + y0;
+				pixel_x = m * index + x0;
+				framebuffer[pixel_x + WIDTH * pixel_y] = color;
+				index += step_dy;
+			}
+		}
+	}
