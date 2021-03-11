@@ -76,7 +76,7 @@ I'm not bothering with SSE acceleration of line drawing anymore. It would be lef
 
 ## Triangles
 
-Okay, now it is ime to define a triangle as folows:
+Okay, now it is ime to define a triangle as follows:
 
 	typedef struct _triangle {
 		point    * p0;
