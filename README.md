@@ -72,7 +72,7 @@ A line in 2D coordinate system, has an angle greater (smaller) than ±45° with 
 
 *Note that we draw our line in wholepixel regime and not in subpixel regime. For subpixel regime explanation, please have a look at my True-open-free-Type repository.*
 
-I'm not bothering with SE acceleration of line drawing anymore. It would be left as an exercise for interested reader.
+I'm not bothering with SSE acceleration of line drawing anymore. It would be left as an exercise for interested reader.
 
 Okay, now it is ime to define a triangle as folows:
 
