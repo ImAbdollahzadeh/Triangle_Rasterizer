@@ -86,7 +86,7 @@ Okay, now it is ime to define a triangle as follows:
 		COLORREF   color;
 	} triangle;
 
-There are three points to construct a tiangle. Then we draw threee lines to highlight the borders of triangle. These lines are drawn with the **draw_line** function above. It is simply:
+There are three points to construct a tiangle. Then we draw three lines to highlight the borders of triangle. These lines are drawn with the **draw_line** function above. It is simply:
 
 	// tr is an object of type triangle*
 	draw_line(tr->p0, tr->p1);
@@ -95,7 +95,7 @@ There are three points to construct a tiangle. Then we draw threee lines to high
 	
 // img borders
 
-Now it is time to paint our triangle. For this, first of all, I need a macro to find the top point between pints p0, p1, and p2. This macro also spits out left and rightside points. Then I start from top point and steps through the line between this point and leftside point. I go one pixel down, then calculate the coressponding pixel between top point and rightside point. Therefore, now, I have two limit points on a scanline and all pixels between these two limits have to be painted. I have a function called ***line_based_dword_fillup_triangle*** for this reason. It is insanely fast and efficient.
+Now it is time to paint our triangle. For this, first of all, I need a macro to find the top point between points p0, p1, and p2. This macro also spits out left and rightside points (a.k.a side_point_1 and side_point_2). Then I start from top point and steps through the line between this point and side_point_1. I go one pixel down, then calculate the coressponding pixel between top point and side_point_2. I have now two limit points on a scanline and all pixels in between have to be painted. I have a function called ***line_based_dword_fillup_triangle*** for this reason. It is insanely fast and efficient.
 
 	void line_based_dword_fillup_triangle(triangle* tr)
 	{
@@ -140,13 +140,13 @@ Now it is time to paint our triangle. For this, first of all, I need a macro to 
 		}
 	}
 
-There is room for some minor optimization, that I leave for readers to play with, but this function is the best to use scanline method for painting the triangle.
+There is room for some minor optimization that I leave for readers to play with, but this function is the best to use scanline method for painting the triangle.
 
 While we go one step in y direction down, we calculate the slope of the line between top_point and side_point_1 and thus the x component of the left side limit pixel. Based on this x component, we therefore calcualte the x component of the limit pixel falling on the line between top_point and side_point_2. Then fillup this scanline.
 
 // img 2
 
-The heart of the rasterizer is where we can work on to accelerate the blitting. For this reason I use x86-SSE optimization. If we concentrate on the way both limit points defined, we come up with this fact that, we cannot use packed floating point instructions since a line pixel can be anywhere on screen and any attampt to make it aligned, will be a speed kiler, and better to stick with un-aligned instructions. Also I used inline assembly and not a separate .asm file (to tolerate the overhead of function epilogue and prologue).
+The heart of the rasterizer is where we can work on to accelerate the blitting. For this reason I use x86-SSE optimization. If we concentrate on the way both limit points defined, we come up with this fact that, it cannot use packed floating point instructions since a line pixel can be anywhere on screen and any attampt to make it 16-byte aligned, would be a speed killer, and better to stick with the un-aligned instructions. Also I used inline assembly and not a separate .asm file (to tolerate the overhead of function epilogue and prologue).
 
 	void accelerated_line_based_xmmword_fillup_triangle(triangle* tr)
 	{
@@ -219,7 +219,7 @@ The heart of the rasterizer is where we can work on to accelerate the blitting. 
 		}
 	}
 
-This is, in my opinion, the fastest way to paint a triangle based on scanline method with SIMD acceleration. Of course some very little optimizations can be done, but they are left for readers to play with.
+This is, in my opinion, the fastest way to paint a triangle based on the scanline method with SIMD acceleration. Of course some very little optimizations can be done, but they are left for readers to play with.
 
 In function ***accelerated_line_based_xmmword_fillup_triangle***, all the calculations are similar to those of ***line_based_dword_fillup_triangle***, but instead of DWORD blit, I separated blocks of XMMWORDs and used 16-byte blit and finally some DWORD blit at the very end. 
 
