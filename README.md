@@ -93,7 +93,9 @@ There are three points to construct a tiangle. Then we draw three lines to highl
 	draw_line(tr->p1, tr->p2);
 	draw_line(tr->p2, tr->p0);
 	
-// img borders
+<p align="center">
+	<img src="https://github.com/ImAbdollahzadeh/Triangle_Rasterizer/images/borders.PNG"/>
+</p>
 
 Now it is time to paint our triangle. For this, first of all, I need a macro to find the top point between points p0, p1, and p2. This macro also spits out left and rightside points (a.k.a side_point_1 and side_point_2). 
 
