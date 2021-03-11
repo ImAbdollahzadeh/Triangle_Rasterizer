@@ -74,6 +74,8 @@ A line in 2D coordinate system, has an angle greater (smaller) than ±45° with 
 
 I'm not bothering with SSE acceleration of line drawing anymore. It would be left as an exercise for interested reader.
 
+## Triangles
+
 Okay, now it is ime to define a triangle as folows:
 
 	typedef struct _triangle {
