@@ -39,11 +39,10 @@ With the following function, we are going to draw a line between two points.
 		dy      = y - y0;
 		abs_dx  = ABS(dx); // absolute value of dx
 		abs_dy  = ABS(dy); // absolute value of dy
-		step_dx = sgn(dx); // +1 or -1
-		step_dy = sgn(dy); // +1 or -1
 
 		if (abs_dx >= abs_dy)
 		{
+			step_dx = sgn(dx); // +1 or -1
 			m = (float)dy / (float)dx;
 			while(index != dx)
 			{
@@ -55,6 +54,7 @@ With the following function, we are going to draw a line between two points.
 		}
 		else
 		{
+			step_dy = sgn(dy); // +1 or -1
 			m = (float)dx / (float)dy;
 			while (index != dy)
 			{
